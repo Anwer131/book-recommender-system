@@ -21,6 +21,11 @@ export const searchBooks = async (query, limit = 20, offset = 0) => {
 };
 
 export const recommendBooks = async (userInput) => {
-    const response = await axiosInstance.post('/recommend-books', { user_input: userInput });
-    return response.data;
+    try {
+        const response = await axiosInstance.post('/recommend-books', { user_input: userInput });
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching recommendations:', error);
+        return { data: [] };
+    }
 };

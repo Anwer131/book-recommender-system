@@ -10,7 +10,11 @@ body {
     padding: 10px;
     text-align: center;
 }
-
+.loading {
+    text-align: center;
+    padding: 20px;
+    font-size: 18px;
+}
 .load-more {
     margin: 20px auto;
     padding: 10px 20px;
@@ -146,4 +150,29 @@ body {
 
 .search-bar button {
     padding: 10px;
+}
+.go-back-button {
+    background-color: #3e3e3e;
+    border: none;
+    padding: 10px 20px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    color: #ffffff;
+    transition: background-color 0.3s;
+}
+
+.go-back-button:hover {
+    background-color: #5c5c5c;
+}
+
+.error {
+    color: #ff4c4c;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.recommend {
+    align-items: center;
+    text-align: center;
 }

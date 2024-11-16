@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { fetchPopularBooks, searchBooks } from '../api';
 import BookList from '../components/BookList';
 import SearchBar from '../components/SearchBar';
@@ -9,19 +10,33 @@ const Home = () => {
     const [query, setQuery] = useState('');
     const [offset, setOffset] = useState(0);
     const [isSearching, setIsSearching] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [searchLoading, setSearchLoading] = useState(false);
+    const [totalResults, setTotalResults] = useState(0);
+
+    const navigate = useNavigate();
 
     // Fetch popular books on component mount
     useEffect(() => {
-        fetchPopularBooks().then(setBooks);
+        const fetchBooks = async () => {
+            setLoading(true);
+            const fetchedBooks = await fetchPopularBooks();
+            setBooks(fetchedBooks);
+            setLoading(false);
+        };
+        fetchBooks();
     }, []);
 
     // Handle search functionality
     const handleSearch = async (searchQuery) => {
         setQuery(searchQuery);
         setIsSearching(true);
+        setSearchLoading(true);
         const data = await searchBooks(searchQuery);
         setSearchResults(data.data);
-        setOffset(20);
+        setTotalResults(data.total);
+        setOffset(20); // Reset offset for pagination
+        setSearchLoading(false);
     };
 
     // Handle loading more search results
@@ -36,30 +51,49 @@ const Home = () => {
         setQuery('');
         setIsSearching(false);
         setSearchResults([]);
+        setTotalResults(0);
+    };
+
+    // Handle book click for recommendations
+    const onBookClick = (book) => {
+        if (book['Book-Title']) {
+            navigate('/recommend', { state: { bookTitle: book['Book-Title'] } });
+        } else {
+            alert('No details available for this book.');
+        }
     };
 
     return (
         <div className="home">
-            <h2>Popular Books</h2>
-
-            {/* Search Bar with Clear Functionality */}
+            <h2>Top 50 Popular Books</h2>
             <SearchBar onSearch={handleSearch} onClear={handleClearSearch} />
 
-            {/* Conditional rendering based on search results */}
+            {loading && <div className="loading">Loading popular books...</div>}
+
             {isSearching ? (
                 <>
-                    <h3>Search Results for "{query}"</h3>
-                    <BookList books={searchResults} />
-                    {searchResults.length > 0 && (
-                        <button className="load-more" onClick={handleLoadMore}>
-                            Load More
-                        </button>
+                    {searchLoading ? (
+                        <div className="loading">Searching for books...</div>
+                    ) : (
+                        <>
+                            <h3>
+                                {totalResults > 0
+                                    ? `Found ${totalResults} books for "${query}"`
+                                    : `No books found for "${query}"`}
+                            </h3>
+                            <BookList books={searchResults} onBookClick={onBookClick} />
+                            {searchResults.length < totalResults && (
+                                <button className="load-more" onClick={handleLoadMore}>
+                                    Load More
+                                </button>
+                            )}
+                        </>
                     )}
                 </>
             ) : (
                 <>
                     <h3>Explore Popular Books</h3>
-                    <BookList books={books} />
+                    <BookList books={books} onBookClick={onBookClick} />
                 </>
             )}
         </div>

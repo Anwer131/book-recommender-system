@@ -43,17 +43,17 @@ def search_books():
     filtered_books = books[
         (books['Book-Title'].str.contains(query, case=False, na=False) |
          books['Book-Author'].str.contains(query, case=False, na=False))
-        & (books['Num-Rating'] > 50)
+        & (books['Num-Rating'] > 20)
     ]
 
     # Sort the filtered books by 'Avg-Rating' in descending order
     sorted_books = filtered_books.sort_values(by='Avg-Rating', ascending=False)
 
-    # Paginate the results
+    # Get the total number of search results
     total_results = len(sorted_books)
-    paginated_books = sorted_books.iloc[offset:offset + limit][['Book-Title', 'Book-Author', 'Image-URL-M', 'Avg-Rating', 'Num-Rating']]
 
-    # Convert the filtered and paginated results to a list of dictionaries
+    # Paginate the results
+    paginated_books = sorted_books.iloc[offset:offset + limit][['Book-Title', 'Book-Author', 'Image-URL-M', 'Avg-Rating', 'Num-Rating']]
     results = paginated_books.to_dict(orient='records')
 
     # Return the results as JSON, along with total results count
