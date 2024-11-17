@@ -65,10 +65,8 @@ const Home = () => {
 
     return (
         <div className="home">
-            <h2>Top 50 Popular Books</h2>
+            <h2>Explore Popular Books</h2>
             <SearchBar onSearch={handleSearch} onClear={handleClearSearch} />
-
-            {loading && <div className="loading">Loading popular books...</div>}
 
             {isSearching ? (
                 <>
@@ -92,10 +90,12 @@ const Home = () => {
                 </>
             ) : (
                 <>
-                    <h3>Explore Popular Books</h3>
+                    <h3><span style={{color:'red'}}>Top 50</span> Popular Books</h3>
+                    <h4>Click on any book to get <span style={{color:'yellow'}}>similar</span> recommendations</h4>
                     <BookList books={books} onBookClick={onBookClick} />
                 </>
             )}
+            {loading && <div className="loading">Loading popular books...</div>}
         </div>
     );
 };

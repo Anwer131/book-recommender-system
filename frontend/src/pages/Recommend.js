@@ -43,7 +43,7 @@ const Recommend = () => {
     return (
         <div className="recommend">
             <button onClick={handleGoBack} className="go-back-button">Go Back</button>
-            <h2>Recommendations for "{bookTitle}"</h2>
+            <h2>Recommendations for <span style={{color:'red'}}>{bookTitle}</span></h2>
             {loading ? (
                 <div className="loading">Loading recommendations...</div>
             ) : error ? (
